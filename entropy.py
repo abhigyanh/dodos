@@ -23,6 +23,8 @@ def Delta(T,V,N,m,s0):
 
 
 def Fluidicity(f, delta):
+    if f < 0 or delta < 0:
+        return 69420    # negative values of f or delta are not possible, return huge number to reset the root finger
     return 2*delta**(-9/2)*f**(15/2) - 6*delta**(-3)*f**(5) - delta**(-3/2)*f**(7/2) + 6*delta**(-3/2)*f**(5/2) + 2*f - 2
 
     ##################################################################
@@ -42,9 +44,10 @@ def TwoPhaseDecompose_Translational(nu, DOS_tr, T, V, N, m):
 
     plt.plot(nu/c, c*DOS_tr_g,  label = 'tr_g')
     plt.plot(nu/c, c*DOS_tr_s,  label = 'tr_s')
+    plt.plot(nu/c, c*DOS_tr,    label = 'tr')
 
     plt.gca().set(
-        xlim = [0,4000],
+        xlim = [0,1500],
         title = 'Density of States',
         xlabel = r'Wavenumber $(cm^{-1})$',
         ylabel = r'$S(\nu)$ (cm)',
@@ -65,11 +68,31 @@ def TwoPhaseDecompose_Rotational(nu, DOS_rot, T, V, N, m):
     DOS_rot_g = s0_rot/(1 + ((pi*s0_rot*nu)/(6*N*f_rot))**2)
     DOS_rot_s = DOS_rot - DOS_rot_g
 
+    # Check condition for solid DoS being negative because S0_rot[nu=0] is discontinuous due to bugs
+    if np.any(DOS_rot_s < 0) == True:
+        Log("""
+        ! Rotational DOS (solid) appears to contain negative values. This might be a bug where S0_rot has a huge zero-frequency discontinuity.
+        ! Interpolating s_0 to approximate correct value. This does not affect entropy calculations if there is no discontinuity.
+        """)
+        # Linear interpolate the correct value
+        s0_rot = DOS_rot[1] + (DOS_rot[1]-DOS_rot[2])/(nu[1] - nu[2])*(nu[1]-nu[0])
+        DOS_rot[0] = s0_rot
+
+        Log("New value of s0_rot = {:.5f}".format(s0_rot), console=False)
+    
+        Delta_rot = Delta(T,V,N,m,s0_rot)
+        f_rot = fsolve(func = Fluidicity, x0 = 0.5, args = (Delta_rot), xtol=1e-04)
+        f_rot = f_rot[0]
+        DOS_rot_g = s0_rot/(1 + ((pi*s0_rot*nu)/(6*N*f_rot))**2)
+        DOS_rot_s = DOS_rot - DOS_rot_g
+
+
     plt.plot(nu/c, c*DOS_rot_g,  label = 'rot_g')
     plt.plot(nu/c, c*DOS_rot_s,  label = 'rot_s')
+    plt.plot(nu/c, c*DOS_rot,    label = 'rot')
 
     plt.gca().set(
-        xlim = [0,4000],
+        xlim = [0,1500],
         title = 'Density of States',
         xlabel = r'Wavenumber $(cm^{-1})$',
         ylabel = r'$S(\nu)$ (cm)',
@@ -82,7 +105,7 @@ def TwoPhaseDecompose_Rotational(nu, DOS_rot, T, V, N, m):
 
 
 def TwoPhaseDecompose_Vibrational(nu, DOS_vib, T, V, N, m):
-    # Fluidity 0 in case of vibrational cases, entire spectrum is solid
+    # Fluidity 0 in case of vibrations, entire spectrum is solid
     s0_vib = DOS_vib[0]
     Delta_vib = 0
     f_vib = 0
@@ -92,6 +115,7 @@ def TwoPhaseDecompose_Vibrational(nu, DOS_vib, T, V, N, m):
 
     plt.plot(nu/c, c*DOS_vib_g,  label = 'vib_g')
     plt.plot(nu/c, c*DOS_vib_s,  label = 'vib_s')
+    plt.plot(nu/c, c*DOS_vib,    label = 'vib')
 
     plt.gca().set(
         xlim = [0,4000],
