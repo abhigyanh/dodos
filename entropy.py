@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.optimize import fsolve
+from scipy.optimize import fsolve, root_scalar
 from scipy.integrate import simpson
 
 from constants import *
@@ -21,12 +21,18 @@ def Delta(T,V,N,m,s0):
     conv2 = ps * np.sqrt(eV / amu) / nm
     return delta*conv2
 
-
-def Fluidicity(f, delta):
+def equation_of_fluidicity(f, delta):
     if f < 0 or delta < 0:
         return 69420    # negative values of f or delta are not possible, return huge number to reset the root finger
     return 2*delta**(-9/2)*f**(15/2) - 6*delta**(-3)*f**(5) - delta**(-3/2)*f**(7/2) + 6*delta**(-3/2)*f**(5/2) + 2*f - 2
 
+def calculate_fluidicity(delta):
+    return root_scalar(lambda f: equation_of_fluidicity(f, delta), x0 = 0.01, x1 = 0.2, method='secant').root
+
+
+
+
+    
     ##################################################################
     """
     FLUIDICITY CALCULATION AND DENSITY OF STATES DECOMPOSITION
@@ -36,8 +42,7 @@ def Fluidicity(f, delta):
 def TwoPhaseDecompose_Translational(nu, DOS_tr, T, V, N, m):
     s0_tr = DOS_tr[0]
     Delta_tr = Delta(T,V,N,m,s0_tr)
-    f_tr = fsolve(Fluidicity, x0 = 0.2, args = (Delta_tr), xtol=1e-5)
-    f_tr = f_tr[0]
+    f_tr = calculate_fluidicity(Delta_tr)
 
     DOS_tr_g = s0_tr/(1 + ((pi*s0_tr*nu)/(6*N*f_tr))**2)
     DOS_tr_s = DOS_tr - DOS_tr_g
@@ -62,8 +67,7 @@ def TwoPhaseDecompose_Translational(nu, DOS_tr, T, V, N, m):
 def TwoPhaseDecompose_Rotational(nu, DOS_rot, T, V, N, m):
     s0_rot = DOS_rot[0]
     Delta_rot = Delta(T,V,N,m,s0_rot)
-    f_rot = fsolve(func = Fluidicity, x0 = 0.5, args = (Delta_rot), xtol=1e-04)
-    f_rot = f_rot[0]
+    f_rot = calculate_fluidicity(Delta_rot)
 
     DOS_rot_g = s0_rot/(1 + ((pi*s0_rot*nu)/(6*N*f_rot))**2)
     DOS_rot_s = DOS_rot - DOS_rot_g
@@ -71,9 +75,9 @@ def TwoPhaseDecompose_Rotational(nu, DOS_rot, T, V, N, m):
     # Check condition for solid DoS being negative because S0_rot[nu=0] is discontinuous due to bugs
     if np.any(DOS_rot_s < 0) == True:
         Log("""
-        ! Rotational DOS (solid) appears to contain negative values. This might be a bug where S0_rot has a huge zero-frequency discontinuity.
+        ! Rotational DOS (solid) appears to contain negative values. This might be a bug (but not necessarily) where S0_rot has a huge zero-frequency discontinuity.
         ! Interpolating s_0 to approximate correct value. This does not affect entropy calculations if there is no discontinuity.
-        """)
+        """, console=False)
         # Linear interpolate the correct value
         s0_rot = DOS_rot[1] + (DOS_rot[1]-DOS_rot[2])/(nu[1] - nu[2])*(nu[1]-nu[0])
         DOS_rot[0] = s0_rot
@@ -81,8 +85,7 @@ def TwoPhaseDecompose_Rotational(nu, DOS_rot, T, V, N, m):
         Log("New value of s0_rot = {:.5f}".format(s0_rot), console=False)
     
         Delta_rot = Delta(T,V,N,m,s0_rot)
-        f_rot = fsolve(func = Fluidicity, x0 = 0.5, args = (Delta_rot), xtol=1e-04)
-        f_rot = f_rot[0]
+        f_rot = calculate_fluidicity(Delta_rot)
         DOS_rot_g = s0_rot/(1 + ((pi*s0_rot*nu)/(6*N*f_rot))**2)
         DOS_rot_s = DOS_rot - DOS_rot_g
 
