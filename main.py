@@ -36,6 +36,14 @@ if __name__ == '__main__':
     boxZ = np.mean(box[:,3])
     Volume = boxX * boxY * boxZ         # nm^3
 
+    """Special code block to recalculate the volume if I'm reducing the trajectory to liquid-only"""
+    SUBTRACT_ICE_VOL = True
+    if SUBTRACT_ICE_VOL == True:
+        # Subtract the volume of the ice block. It has same x and y dimensions, but z is custom defined by me ofc.
+        Log("## Correcting volume by subtracting estimated volume of ice block! ##")
+        Volume -= boxX*boxY*(2.8)
+
+
     sysDensity = nmols*mtot/Volume * amu/(nm**3)
 
 
