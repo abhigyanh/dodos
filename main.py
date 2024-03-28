@@ -383,3 +383,11 @@ if __name__ == '__main__':
             S_tr/nmols, S_rot/nmols, S_vib/nmols
     ))
 
+    np.savetxt(
+        fname = 'entropy.txt', 
+        X = np.column_stack(
+            (S_tr/nmols, S_rot/nmols, S_vib/nmols)
+            ),
+        header = '(J/mol K)   Translational   Rotational  Vibrational',
+    )
+
