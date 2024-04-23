@@ -44,6 +44,14 @@ if __name__ == '__main__':
         Volume -= boxX*boxY*(2.8)
 
 
+
+    """Special code block to recalculate the volume if I'm reducing the trajectory to interface-only"""
+    INTERFACE_ONLY = True
+    if INTERFACE_ONLY == True:
+        # Subtract the volume of the ice block. It has same x and y dimensions, but z is custom defined by me ofc.
+        Log("## Considering interface only by considering a 2 nm interface in the z direction! ##")
+        Volume = boxX*boxY*(2.0)
+
     sysDensity = nmols*mtot/Volume * amu/(nm**3)
 
 
