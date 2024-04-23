@@ -10,7 +10,7 @@ from constants import *
 logfile = "log.txt"
 
 def userInputHandler(argv):
-    helptext = 'Usage: dodos -x <positions.xvg> -v <velocities.xvg> -b <box.xvg> -T <temp> -m <masses.txt> -nt <number of CPU threads>'
+    helptext = 'Usage: dodos -x <positions.xvg> -v <velocities.xvg> -b <box.xvg> -T <temp> -m <masses.txt> -t <number of CPU threads>'
 
     temp = 300
     xfile = 'pos.xvg'
