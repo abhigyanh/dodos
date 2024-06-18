@@ -163,7 +163,7 @@ def CalculateEntropy_Translational(nu, DOS_tr_s, DOS_tr_g, f_tr, Delta_tr, m, N,
     DOS_tr_g = DOS_tr_g[np.nonzero(nu)]
     DOS_tr_s = DOS_tr_s[np.nonzero(nu)]
 
-    S_tr = simpson(DOS_tr_g*W_gas, nu) + simpson(DOS_tr_s*W_solid, nu)
+    S_tr = simpson(DOS_tr_g*W_gas, x=nu) + simpson(DOS_tr_s*W_solid, x=nu)
     S_tr *= kB*eVtoJ
     return S_tr
 
@@ -187,7 +187,7 @@ def CalculateEntropy_Rotational(nu, DOS_rot_s, DOS_rot_g, I_1, I_2, I_3, Sigma, 
     DOS_rot_g = DOS_rot_g[np.nonzero(nu)]
     DOS_rot_s = DOS_rot_s[np.nonzero(nu)]
 
-    S_rot = simpson(DOS_rot_g*W_gas, nu) + simpson(DOS_rot_s*W_solid, nu)
+    S_rot = simpson(DOS_rot_g*W_gas, x=nu) + simpson(DOS_rot_s*W_solid, x=nu)
     S_rot *= kB*eVtoJ
     return S_rot
 
@@ -202,6 +202,6 @@ def CalculateEntropy_Vibrational(nu, DOS_vib, T):
     W_solid = bhn/(np.exp(bhn)-1) - np.log(1-np.exp(-bhn))
     DOS_vib = DOS_vib[np.nonzero(nu)]
 
-    S_vib = simpson(DOS_vib*W_solid, nu)
+    S_vib = simpson(DOS_vib*W_solid, x=nu)
     S_vib *= kB*eVtoJ
     return S_vib

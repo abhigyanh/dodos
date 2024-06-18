@@ -332,10 +332,10 @@ if __name__ == '__main__':
 
     # Integrate all DoS to get number of states
     nu = np.fft.rfftfreq(n = nframes, d = dt)
-    integral_dos_tr = simpson(DOS_tr, nu)
-    integral_dos_rot = simpson(DOS_rot, nu)
-    integral_dos_vib = simpson(DOS_vib, nu)
-    integral_dos_tot = simpson(DOS_tot, nu)
+    integral_dos_tr = simpson(DOS_tr, x=nu)
+    integral_dos_rot = simpson(DOS_rot, x=nu)
+    integral_dos_vib = simpson(DOS_vib, x=nu)
+    integral_dos_tot = simpson(DOS_tot, x=nu)
 
 
     Log("""
