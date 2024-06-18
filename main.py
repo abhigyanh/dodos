@@ -9,8 +9,6 @@ from functions import *
 from entropy import *
 
 
-
-
 if __name__ == '__main__':
     positions_fname, velocities_fname, box_fname, temp, masslist, nthreads = userInputHandler(sys.argv[1:])
     # clear up the log file
@@ -46,7 +44,7 @@ if __name__ == '__main__':
 
 
     """Special code block to recalculate the volume if I'm reducing the trajectory to interface-only"""
-    INTERFACE_ONLY = True
+    INTERFACE_ONLY = False
     if INTERFACE_ONLY == True:
         # Subtract the volume of the ice block. It has same x and y dimensions, but z is custom defined by me ofc.
         Log("## Considering interface only by considering a 2 nm interface in the z direction! ##")
