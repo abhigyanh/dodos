@@ -8,8 +8,10 @@ from constants import *
 from functions import *
 from entropy import *
 
+VERSION=1.1
 
 if __name__ == '__main__':
+    Log("Running DODOS v{}".format(VERSION))
     positions_fname, velocities_fname, box_fname, temp, masslist, nthreads = userInputHandler(sys.argv[1:])
     # clear up the log file
     cleanLogFile()
@@ -34,21 +36,21 @@ if __name__ == '__main__':
     boxZ = np.mean(box[:,3])
     Volume = boxX * boxY * boxZ         # nm^3
 
+    ### DIRTY CODE BLOCK ONLY USE IT FOR SPECIAL CASES
     """Special code block to recalculate the volume if I'm reducing the trajectory to liquid-only"""
     SUBTRACT_ICE_VOL = False
     if SUBTRACT_ICE_VOL == True:
-        # Subtract the volume of the ice block. It has same x and y dimensions, but z is custom defined by me ofc.
+        # Subtract the volume of the ice block. It has same x and y dimensions, but z is custom defined.
         Log("## Correcting volume by subtracting estimated volume of ice block! ##")
         Volume -= boxX*boxY*(2.8)
-
-
 
     """Special code block to recalculate the volume if I'm reducing the trajectory to interface-only"""
     INTERFACE_ONLY = False
     if INTERFACE_ONLY == True:
-        # Subtract the volume of the ice block. It has same x and y dimensions, but z is custom defined by me ofc.
-        Log("## Considering interface only by considering a 2 nm interface in the z direction! ##")
+        # Calculate the volume of the interface slice. It has same x and y dimensions, but z is custom defined.
+        Log("## Considering interface only by considering a 2.0 nm interface in the z direction! ##")
         Volume = boxX*boxY*(2.0)
+    ### DIRTY CODE BLOCK ONLY USE IT FOR SPECIAL CASES
 
     sysDensity = nmols*mtot/Volume * amu/(nm**3)
 
@@ -376,6 +378,11 @@ if __name__ == '__main__':
     S_rot = CalculateEntropy_Rotational(nu, DOS_rot_s, DOS_rot_g, Inertia1, Inertia2, Inertia3, 2, temp)
     S_vib = CalculateEntropy_Vibrational(nu, DOS_vib, temp)
 
+    # Report negative entropy bug
+    if S_tr < 0:        
+        Log("Translational entropy is negative. This is a bug. Please re-run the trajectory and DODOS to fix.")
+
+    # Report results
     Log("""
     # TWO PHASE THERMODYNAMICS RESULTS #
                         Translational       Rotational          Vibrational
