@@ -1,14 +1,15 @@
-import numpy as np
-from scipy.integrate import simpson
 import time
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
+
+import numpy as np
+from scipy.integrate import simpson
 
 from constants import *
 from functions import *
 from entropy import *
 
-VERSION=1.1
+VERSION=1.11
 
 if __name__ == '__main__':
     Log("Running DODOS v{}".format(VERSION))
@@ -319,7 +320,7 @@ if __name__ == '__main__':
         Inertia3 += result[6]/nmols
 
     VelocDecompTime = -(VelocDecompTime - time.time())
-    Log("> Finished velocity decomposition + spectrum (took {:.1f} s | {:.1f} ms per atom)".format(VelocDecompTime, 1000*VelocDecompTime/natoms))
+    Log("> Finished velocity decomposition + spectrum (took {:.1f} s | {:.1f} ms per atom)".format(VelocDecompTime, 1000*VelocDecompTime/natoms)) 
     Log("- Principal axes of inertia = {}, {}, {} amu nm^2".format(Inertia1, Inertia2, Inertia3), console=False)
 
     ##################################################################
@@ -372,15 +373,10 @@ if __name__ == '__main__':
     Delta_rot, f_rot, s0_rot, DOS_rot_g, DOS_rot_s = TwoPhaseDecompose_Rotational(nu, DOS_rot, temp, Volume, nmols, sum(masslist))
     Delta_vib, f_vib, s0_vib, DOS_vib_g, DOS_vib_s = TwoPhaseDecompose_Vibrational(nu, DOS_vib, temp, Volume, nmols, sum(masslist))
 
-
     # Supply solid and gaseous DOS separately, calculate entropy using weighted integrals
     S_tr = CalculateEntropy_Translational(nu, DOS_tr_s, DOS_tr_g, f_tr, Delta_tr, sum(masslist), nmols, Volume, temp)
     S_rot = CalculateEntropy_Rotational(nu, DOS_rot_s, DOS_rot_g, Inertia1, Inertia2, Inertia3, 2, temp)
     S_vib = CalculateEntropy_Vibrational(nu, DOS_vib, temp)
-
-    # Report negative entropy bug
-    if S_tr < 0:        
-        Log("Translational entropy is negative. This is a bug. Please re-run the trajectory and DODOS to fix.")
 
     # Report results
     Log("""
@@ -404,3 +400,7 @@ if __name__ == '__main__':
         header = '(J/mol K)   Translational   Rotational  Vibrational',
     )
 
+    # Report negative entropy bug
+    if S_tr < 0:        
+        Log("Translational entropy is negative. This is a bug. Please re-run the trajectory and DODOS to fix.")
+        sys.exit(4)
