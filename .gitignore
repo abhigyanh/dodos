@@ -1,1 +1,3 @@
 __pycache__/*
+build/*
+dodos.egg-info/*
