@@ -1,6 +1,10 @@
 Uses Numpy, Scipy and Matplotlib.
 
 Changelog:
+- 1.21
+
+> Very barebones python packaging implemented.
+
 - 1.20
 
 > No longer using sys.argv to parse arguments, argparse used instead.

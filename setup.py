@@ -5,7 +5,9 @@ setup(
     version='1.21',
     packages=find_packages(),
     install_requires=[
-        # Add your dependencies here
+        'numpy',
+        'scipy',
+        'matplotlib',
     ],
     entry_points={
         'console_scripts': [
