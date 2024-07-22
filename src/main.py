@@ -9,7 +9,7 @@ from constants import *
 from functions import *
 from entropy import *
 
-VERSION=1.20
+VERSION=1.21
 
 if __name__ == '__main__':
     Log("---- Running dodos v{} ----".format(VERSION))

@@ -1,0 +1,13 @@
+README.md
+setup.py
+dodos.egg-info/PKG-INFO
+dodos.egg-info/SOURCES.txt
+dodos.egg-info/dependency_links.txt
+dodos.egg-info/entry_points.txt
+dodos.egg-info/top_level.txt
+src/__init__.py
+src/constants.py
+src/entropy.py
+src/functions.py
+src/launch.py
+src/main.py
