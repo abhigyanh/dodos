@@ -1,4 +1,4 @@
-import time
+import time, argparse, sys
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
 
@@ -9,11 +9,36 @@ from constants import *
 from functions import *
 from entropy import *
 
-VERSION=1.11
+VERSION=1.20
 
 if __name__ == '__main__':
-    Log("Running DODOS v{}".format(VERSION))
-    positions_fname, velocities_fname, box_fname, temp, masslist, nthreads = userInputHandler(sys.argv[1:])
+    Log("---- Running dodos v{} ----".format(VERSION))
+    # Set up argument parser
+    parser = argparse.ArgumentParser()
+    # Add arguments
+    parser.add_argument('-t', '--threads',      type=int, default=1, help="Number of parallel threads to spawn (default: 1)")
+    parser.add_argument('-T', '--temperature',  type=float, default=300.0, help="System temperature in simulation (default: 300 K)")
+    parser.add_argument('-x', '--position',     type=str, default='pos.xvg', help="Positions dump file <pos.xvg>")
+    parser.add_argument('-v', '--velocity',     type=str, default='veloc.xvg', help="Velocities dump file <veloc.xvg>")
+    parser.add_argument('-b', '--box',          type=str, default='box.xvg', help="Box size dump file <box.xvg>")
+    parser.add_argument('-m', '--masses',       type=str, default='masses.txt', help="Text file of atomic masses <masses.txt>")
+    # Parse arguments
+    args = parser.parse_args()
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(1)
+    # Use the arguments
+    positions_fname = args.position
+    velocities_fname = args.velocity
+    box_fname = args.box
+    temp = args.temperature
+    nthreads = args.threads
+    massfile = args.masses
+    masslist = []
+    with open(massfile, 'r') as file:
+        for line in file:
+            masslist.append(float(line))
+
     # clear up the log file
     cleanLogFile()
 

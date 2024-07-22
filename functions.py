@@ -10,6 +10,7 @@ from constants import *
 logfile = "log.txt"
 
 def userInputHandler(argv):
+    # THIS IS NO LONGER IN USE
     helptext = 'Usage: dodos -x <pos.xvg> -v <veloc.xvg> -b <box.xvg> -T <temp> -m <masses.txt> -t <number of CPU threads>'
 
     temp = 300
