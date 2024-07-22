@@ -5,7 +5,8 @@ Uses Numpy, Scipy and Matplotlib.
 Clone or download the repository, go into said directory and:
 
 ```bash
-> pip install .
+pip install -r requirements.txt
+pip install .
 ```
 
 ## Changelog
