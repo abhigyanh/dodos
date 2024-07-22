@@ -4,7 +4,9 @@ Uses Numpy, Scipy and Matplotlib.
 
 Clone or download the repository, go into said directory and:
 
+```bash
 > pip install .
+```
 
 ## Changelog
 - 1.21
