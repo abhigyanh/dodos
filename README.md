@@ -2,7 +2,7 @@ Uses Numpy, Scipy and Matplotlib.
 
 ## Installation
 
-Clone or download the repository, go into said directory and:
+Clone or download the repository, go into directory and:
 
 ```bash
 pip install -r requirements.txt
