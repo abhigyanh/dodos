@@ -1,7 +1,0 @@
-README.md
-setup.py
-src/dodos.egg-info/PKG-INFO
-src/dodos.egg-info/SOURCES.txt
-src/dodos.egg-info/dependency_links.txt
-src/dodos.egg-info/entry_points.txt
-src/dodos.egg-info/top_level.txt
