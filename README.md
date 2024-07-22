@@ -1,17 +1,25 @@
 Uses Numpy, Scipy and Matplotlib.
 
-Changelog:
+## Installation
+
+Clone or download the repository, go into said directory and:
+
+> pip install .
+
+## Changelog
 - 1.21
 
-> Very barebones python packaging implemented.
+1. Very barebones python packaging implemented.
+2. Install using "pip install ."
 
 - 1.20
 
-> No longer using sys.argv to parse arguments, argparse used instead.
+1. No longer using sys.argv to parse arguments.
+2. argparse used instead.
 
 - 1.00
 
-> First release
+1. First release.
 
 ---------------------------------------------------------------------
 References: 
