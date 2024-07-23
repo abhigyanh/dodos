@@ -21,6 +21,7 @@ if __name__ == '__main__':
     parser.add_argument('-x', '--position',     type=str, default='pos.xvg', help="Positions dump file <pos.xvg>")
     parser.add_argument('-v', '--velocity',     type=str, default='veloc.xvg', help="Velocities dump file <veloc.xvg>")
     parser.add_argument('-b', '--box',          type=str, default='box.xvg', help="Box size dump file <box.xvg>")
+    parser.add_argument('-V', '--volume',       type=float, default=0.0, help="Simulation volume (nm^3, alternative to --box) <default: 0>")
     parser.add_argument('-m', '--masses',       type=str, default='masses.txt', help="Text file of atomic masses <masses.txt>")
     parser.add_argument('--version',            action="store_true", help='Print out version info.')
     # Parse arguments
@@ -37,6 +38,7 @@ if __name__ == '__main__':
     box_fname = args.box
     temp = args.temperature
     nthreads = args.threads
+    input_volume = args.volume
     massfile = args.masses
     masslist = []
     with open(massfile, 'r') as file:
@@ -56,7 +58,7 @@ if __name__ == '__main__':
     m = masslist
     mtot = sum(masslist)
     atomsPerMolecule = len(m)
-    kT = (kB)*(temp)                    # eV
+    kT = (kB)*(temp)                        # eV
 
     dt = veloc[1,0]
     nframes = veloc.shape[0]
@@ -64,10 +66,13 @@ if __name__ == '__main__':
     natoms = (veloc.shape[1]-1)//3
     nmols = natoms//atomsPerMolecule
 
-    boxX = np.mean(box[:,1])    
-    boxY = np.mean(box[:,2])
-    boxZ = np.mean(box[:,3])
-    Volume = boxX * boxY * boxZ         # nm^3
+    if input_volume != 0:                   # Set volume to input volume
+        Volume = input_volume
+    else: 
+        boxX = np.mean(box[:,1])    
+        boxY = np.mean(box[:,2])
+        boxZ = np.mean(box[:,3])
+        Volume = boxX * boxY * boxZ         # nm^3
 
     ### DIRTY CODE BLOCK ONLY USE IT FOR SPECIAL CASES ###
     """Special code block to recalculate the volume if I'm reducing the trajectory to liquid-only"""
@@ -96,7 +101,6 @@ if __name__ == '__main__':
     Log("Box array dtype = {}".format(box.dtype), console=False)
 
     Log("""
-    # BEGINNING DODOS #
     Trajectory and system information:
     - Number of frames = {}          Simulation time = {} ps          Dump frequency = {} ps
     - Number of atoms = {}           Number of molecules = {}         Atoms per molecule = {}

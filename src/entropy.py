@@ -53,7 +53,6 @@ def TwoPhaseDecompose_Translational(nu, DOS_tr, T, V, N, m):
 
     plt.gca().set(
         xlim = [0,1500],
-        title = 'Density of States',
         xlabel = r'Wavenumber $(cm^{-1})$',
         ylabel = r'$S(\nu)$ (cm)',
     )
@@ -75,12 +74,12 @@ def TwoPhaseDecompose_Rotational(nu, DOS_rot, T, V, N, m):
     # Check condition for solid DoS being negative because S0_rot[nu=0] is discontinuous due to bugs
     if np.any(DOS_rot_s < 0) == True:
         Log("""
-        ! Rotational DOS (solid) appears to contain negative values. This might be a bug (but not necessarily) where S0_rot has a huge zero-frequency discontinuity.
+        ! Rotational DOS (solid) appears to contain negative values. This might (but not necessarily) be a bug where S0_rot has an unusually large zero-frequency discontinuity.
         ! Interpolating s_0 to approximate correct value. This does not affect entropy calculations if there is no discontinuity.
         """, console=False)
         # Linear interpolate the correct value
-        s0_rot = DOS_rot[1] + (DOS_rot[1]-DOS_rot[2])/(nu[1] - nu[2])*(nu[1]-nu[0])
-        DOS_rot[0] = s0_rot
+        s0_rot_new = DOS_rot[1] + (DOS_rot[1]-DOS_rot[2])/(nu[1] - nu[2])*(nu[1]-nu[0])
+        DOS_rot[0] = s0_rot_new
 
         Log("New value of s0_rot = {:.5f}".format(s0_rot), console=False)
     
@@ -96,7 +95,6 @@ def TwoPhaseDecompose_Rotational(nu, DOS_rot, T, V, N, m):
 
     plt.gca().set(
         xlim = [0,1500],
-        title = 'Density of States',
         xlabel = r'Wavenumber $(cm^{-1})$',
         ylabel = r'$S(\nu)$ (cm)',
     )
@@ -122,7 +120,6 @@ def TwoPhaseDecompose_Vibrational(nu, DOS_vib, T, V, N, m):
 
     plt.gca().set(
         xlim = [0,4000],
-        title = 'Density of States',
         xlabel = r'Wavenumber $(cm^{-1})$',
         ylabel = r'$S(\nu)$ (cm)',
     )
