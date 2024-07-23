@@ -10,6 +10,10 @@ pip install .
 ```
 
 ## Changelog
+- 1.22
+
+1. Added user-defined volume option to override the option of using a dump for the box size.
+
 - 1.21
 
 1. Very barebones python packaging implemented.
