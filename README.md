@@ -22,7 +22,7 @@ dodos -T 298 -t $(nproc)
 ```
 This will run an example simulation of 1000 molecules of TIP4P/2005F water in GROMACS, then use GROMACS in-built tools to dump the trajectories into a format accessible by this script. After that, dodos will run, utilizing all processors available on your system to parallelize the procedure. Once it's done, it will print out the entropy data in your console window, and create a txt file with the calculated DOS, and make some plots for your viewing. The console output should be something similar to the following:
 
-(image)
+![Console output of dodos](example/1.png "Console output of dodos")
 
 The molar entropy of TIP4P/2005F water at 298K is ~60 (J/mol K) [4]. Add up the translational, rotational and vibrational entropy printed in your console output. If it's about 60, then you're done.
 
