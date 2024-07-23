@@ -8,25 +8,29 @@ from scipy.integrate import simpson
 from constants import *
 from functions import *
 from entropy import *
+from version import project_version
 
-VERSION=1.21
+VERSION=project_version
 
 if __name__ == '__main__':
-    Log("---- Running dodos v{} ----".format(VERSION))
     # Set up argument parser
     parser = argparse.ArgumentParser()
     # Add arguments
-    parser.add_argument('-t', '--threads',      type=int, default=1, help="Number of parallel threads to spawn (default: 1)")
-    parser.add_argument('-T', '--temperature',  type=float, default=300.0, help="System temperature in simulation (default: 300 K)")
+    parser.add_argument('-t', '--threads',      type=int, default=1, help="Number of parallel threads to spawn <1>")
+    parser.add_argument('-T', '--temperature',  type=float, default=300.0, help="System temperature (Kelvin) in simulation <300>")
     parser.add_argument('-x', '--position',     type=str, default='pos.xvg', help="Positions dump file <pos.xvg>")
     parser.add_argument('-v', '--velocity',     type=str, default='veloc.xvg', help="Velocities dump file <veloc.xvg>")
     parser.add_argument('-b', '--box',          type=str, default='box.xvg', help="Box size dump file <box.xvg>")
     parser.add_argument('-m', '--masses',       type=str, default='masses.txt', help="Text file of atomic masses <masses.txt>")
+    parser.add_argument('--version',            action="store_true", help='Print out version info.')
     # Parse arguments
     args = parser.parse_args()
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
+    if args.version == True:
+        print("dodos version v{}".format(VERSION))
+        sys.exit(0)
     # Use the arguments
     positions_fname = args.position
     velocities_fname = args.velocity
@@ -41,6 +45,9 @@ if __name__ == '__main__':
 
     # clear up the log file
     cleanLogFile()
+
+    # Welcome line
+    Log("---- Running dodos v{} ----".format(VERSION))
 
     # IMPORT VELOCITY FILES AND PRINT OUT SOME BASIC INFORMATION
     veloc = loadxvg(velocities_fname)
@@ -62,7 +69,7 @@ if __name__ == '__main__':
     boxZ = np.mean(box[:,3])
     Volume = boxX * boxY * boxZ         # nm^3
 
-    ### DIRTY CODE BLOCK ONLY USE IT FOR SPECIAL CASES
+    ### DIRTY CODE BLOCK ONLY USE IT FOR SPECIAL CASES ###
     """Special code block to recalculate the volume if I'm reducing the trajectory to liquid-only"""
     SUBTRACT_ICE_VOL = False
     if SUBTRACT_ICE_VOL == True:
@@ -76,7 +83,7 @@ if __name__ == '__main__':
         # Calculate the volume of the interface slice. It has same x and y dimensions, but z is custom defined.
         Log("## Considering interface only by considering a 2.0 nm interface in the z direction! ##")
         Volume = boxX*boxY*(2.0)
-    ### DIRTY CODE BLOCK ONLY USE IT FOR SPECIAL CASES
+    ### DIRTY CODE BLOCK ONLY USE IT FOR SPECIAL CASES ###
 
     sysDensity = nmols*mtot/Volume * amu/(nm**3)
 
