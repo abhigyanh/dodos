@@ -24,7 +24,7 @@ This will run an example NVT simulation of 1000 molecules of TIP4P/2005F water i
 
 ![Console output of dodos](example/1.png "Console output of dodos")
 
-The molar entropy of TIP4P/2005F water at 298K is ~60 (J/mol K) [4]. Add up the translational, rotational and vibrational entropy printed in your console output. If it's about 60, then you're done.
+The molar entropy of TIP4P/2005F water at 298K is ~60 (J/mol K) [4]. Add up the translational, rotational and vibrational entropy printed in your console output and if it's about 60, then you're done.
 
 PS: The trajectory files (.trr) and the dump files (.xvg) will be considerable in size, around a gigabyte each. To clean up the old data, you can launch the other pre-written script 'clean-example-files.sh' which will delete the existing data and free up space. 
 
