@@ -59,7 +59,7 @@ If you are already inside the same directory as all the required files, run:
 ```bash
  dodos --temperature 298 --threads $(nproc)
 ```
-The option *--threads* tells it to spawn as many jobs as there are processors in your system to utilize the parallelization option. *--temperature* provides the user-input system temperature to be taken in consideration during the analysis.
+The option *--threads* tells it how many jobs it should spawn to utilize the parallelization option for a speedup. *--temperature* provides the user-input system temperature to be taken in consideration during the analysis.
 
 5. After **dodos** has finished running, you can view the image plots for the DOS calculation, raw DOS data (DoS.txt), as well as the resulting entropy in the output file *entropy.txt*. A log.txt file is also written.
 
