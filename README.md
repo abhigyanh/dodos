@@ -28,6 +28,13 @@ The molar entropy of TIP4P/2005F water at 298K is ~60 (J/mol K) [4]. Add up the 
 
 PS: The trajectory files (.trr) and the dump files (.xvg) will be considerable in size, around a gigabyte each. To clean up the old data, you can launch the other pre-written script 'clean-example-files.sh' which will delete the existing data and free up space. 
 
+## Usage
+
+The starting point for every dodos run is the trajectory file (.trr) output by your Gromacs simulation (traj.trr). Note that compressed output (.xtc) cannot be used as they don't store velocities, that are necessary for this script to run. 
+
+1. To make sure that the molecules in the trajectory files aren't broken due to PBC, use $gmx trjconv$ to make molecules whole.
+> gmx traj -f traj.trr -s <mysimulation>.tpr -o traj_whole.trr -pbc whole
+
 ## Changelog
 - 1.22
 
