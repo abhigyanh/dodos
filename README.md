@@ -9,7 +9,7 @@ pip install -r requirements.txt
 pip install .
 ```
 
-## Usage (quick)
+## Quick start
 
 Make sure GROMACS is accessible, and the name of the executable is 'gmx'. If not, change 'gmx' into whatever your own executable name is.
 Head into example/TIP4P2005F, and run the following:
@@ -20,11 +20,13 @@ chmod +x dump-from-trajectory.sh
 cd dodos
 dodos -T 298 -t $(nproc)
 ```
-This will run an example simulation of 1000 molecules of TIP4P/2005F water in GROMACS, then use GROMACS in-built tools to dump the trajectories into a format accessible by this script. After that, dodos will run, utilizing all processors available on your system to parallelize the procedure. Once it's done, it will print out the entropy data in your console window, and create a txt file with the calculated DOS, and make some plots for your viewing. The console output should be something similar to the following:
+This will run an example NVT simulation of 1000 molecules of TIP4P/2005F water in GROMACS, then use GROMACS in-built tools to dump the trajectories into a format accessible by this script. After that, dodos will run, utilizing all processors available on your system to parallelize the procedure. Once it's done, it will print out the entropy data in your console window, and create a txt file with the calculated DOS, and make some plots for your viewing. The console output should be something similar to the following:
 
 ![Console output of dodos](example/1.png "Console output of dodos")
 
 The molar entropy of TIP4P/2005F water at 298K is ~60 (J/mol K) [4]. Add up the translational, rotational and vibrational entropy printed in your console output. If it's about 60, then you're done.
+
+PS: The trajectory files (.trr) and the dump files (.xvg) will be considerable in size, around a gigabyte each. To clean up the old data, you can launch the other pre-written script 'clean-example-files.sh' which will delete the existing data and free up space. 
 
 ## Changelog
 - 1.22
