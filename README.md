@@ -33,7 +33,10 @@ PS: The trajectory files (.trr) and the dump files (.xvg) will be considerable i
 The starting point for every dodos run is the trajectory file (.trr) output by your Gromacs simulation (traj.trr). Note that compressed output (.xtc) cannot be used as they don't store velocities, that are necessary for this script to run. 
 
 1. To make sure that the molecules in the trajectory files aren't broken due to PBC, use $gmx trjconv$ to make molecules whole.
-> gmx traj -f traj.trr -s <mysimulation>.tpr -o traj_whole.trr -pbc whole
+```bash
+    gmx traj -f traj.trr -s <mysimulation>.tpr -o traj_whole.trr -pbc whole
+```
+(Choose the 'System" option, or whatever option you desire to perform this calculation for.)
 
 ## Changelog
 - 1.22
