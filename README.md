@@ -34,13 +34,13 @@ The starting point for every dodos run is the trajectory file (.trr) output by y
 
 1. To make sure that the molecules in the trajectory files aren't broken due to PBC, use *gmx trjconv* to make molecules whole.
 ```bash
- gmx traj -f traj.trr -s mysimulation.tpr -o traj_whole.trr -pbc whole
+ gmx trjconv -f traj.trr -s <mysimulation.tpr> -o traj_whole.trr -pbc whole
 ```
 (Choose the 'System" option, or whatever option you desire to perform this calculation for.)
 
 2. Now use *gmx traj* to dump the coordinates and velocities from the *trr* trajectory file into *xvg* dump files that can be read by the Python script.
 ```bash
- gmx traj -f traj_whole.trr -s mysimulation.tpr -ov veloc.xvg -ox pos.xvg -ob box.xvg
+ gmx traj -f traj_whole.trr -s <mysimulation.tpr> -ov veloc.xvg -ox pos.xvg -ob box.xvg
 ```
 
 3. In the directory where you'd like to run **dodos**, create the atomic mass file (masses.txt) containing the atomic masses of all the atomics in your molecule *in the same order as they appear in your system*. For example, in the example TIP4P/2005F system, the atoms appear in the order *O,H,H,M* with masses 15.999, 1.001, 1.001, 0.000 respectively. Hence, the *masses.txt* should look something like this:
