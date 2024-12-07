@@ -1,1 +1,1 @@
-project_version='1.22'
+project_version='1.23'

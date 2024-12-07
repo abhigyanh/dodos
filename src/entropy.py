@@ -23,16 +23,12 @@ def Delta(T,V,N,m,s0):
 
 def equation_of_fluidicity(f, delta):
     if f < 0 or delta < 0:
-        return 69420    # negative values of f or delta are not possible, return huge number to reset the root finger
+        return 69420    # negative values of f or delta are not possible, return huge number to reset the root finder
     return 2*delta**(-9/2)*f**(15/2) - 6*delta**(-3)*f**(5) - delta**(-3/2)*f**(7/2) + 6*delta**(-3/2)*f**(5/2) + 2*f - 2
 
 def calculate_fluidicity(delta):
-    return root_scalar(lambda f: equation_of_fluidicity(f, delta), x0 = 0.01, x1 = 0.2, method='secant').root
+    return root_scalar(lambda f: equation_of_fluidicity(f, delta), method='brentq', bracket=[0,1]).root
 
-
-
-
-    
     ##################################################################
     """
     FLUIDICITY CALCULATION AND DENSITY OF STATES DECOMPOSITION
@@ -71,23 +67,41 @@ def TwoPhaseDecompose_Rotational(nu, DOS_rot, T, V, N, m):
     DOS_rot_g = s0_rot/(1 + ((pi*s0_rot*nu)/(6*N*f_rot))**2)
     DOS_rot_s = DOS_rot - DOS_rot_g
 
+    # Log("DEBUG MESSAGE: Not correcting for negative values of S0_rot[nu=0] for debugging purposes.")
     # Check condition for solid DoS being negative because S0_rot[nu=0] is discontinuous due to bugs
-    if np.any(DOS_rot_s < 0) == True:
-        Log("""
-        ! Rotational DOS (solid) appears to contain negative values. This might (but not necessarily) be a bug where S0_rot has an unusually large zero-frequency discontinuity.
-        ! Interpolating s_0 to approximate correct value. This does not affect entropy calculations if there is no discontinuity.
-        """, console=False)
-        # Linear interpolate the correct value
-        s0_rot_new = DOS_rot[1] + (DOS_rot[1]-DOS_rot[2])/(nu[1] - nu[2])*(nu[1]-nu[0])
-        DOS_rot[0] = s0_rot_new
+    # if np.any(DOS_rot_s < 0) == True:
+    #     Log("""
+    #     ! Rotational DOS (solid) appears to contain negative values. This might (but not necessarily) be a bug where S0_rot has an unusually large zero-frequency discontinuity.
+    #     ! Interpolating s_0 to approximate correct value. This does not affect entropy calculations if there is no discontinuity.
+    #     """, console=False)
+    #     # Linear interpolate the correct value
+    #     s0_rot_new = DOS_rot[1] + (DOS_rot[1]-DOS_rot[2])/(nu[1] - nu[2])*(nu[1]-nu[0])
+    #     DOS_rot[0] = s0_rot_new 
+    #     Log("New value of s0_rot = {:.5f}".format(s0_rot), console=False)
+    # 
+    #     Delta_rot = Delta(T,V,N,m,s0_rot)
+    #     f_rot = calculate_fluidicity(Delta_rot)
+    #     DOS_rot_g = s0_rot/(1 + ((pi*s0_rot*nu)/(6*N*f_rot))**2)
+    #     DOS_rot_s = DOS_rot - DOS_rot_g
 
-        Log("New value of s0_rot = {:.5f}".format(s0_rot), console=False)
-    
-        Delta_rot = Delta(T,V,N,m,s0_rot)
-        f_rot = calculate_fluidicity(Delta_rot)
-        DOS_rot_g = s0_rot/(1 + ((pi*s0_rot*nu)/(6*N*f_rot))**2)
-        DOS_rot_s = DOS_rot - DOS_rot_g
+    Log("DEBUG: Correcting S0_rot[0] using a cubic polynomial interpolation.", console=False)
+    Log("DEBUG: Current value of S0_rot[0] = {}".format(s0_rot), console=False)
+    # Extrapolating code block
+    # Choose the indices to extrapolate from (e.g., A[1], A[2], etc.)
+    indices = [1,2,3,4]
+    coefficients = np.polyfit(indices, DOS_rot[indices], 3)
+    polynomial = np.poly1d(coefficients)
+    # Extrapolate the value at index 0
+    s0_rot_extrapolated = polynomial(0)
+    DOS_rot[0] = s0_rot_extrapolated
+    s0_rot = s0_rot_extrapolated
+    Delta_rot = Delta(T,V,N,m,s0_rot)
+    f_rot = calculate_fluidicity(Delta_rot)
 
+    DOS_rot_g = s0_rot/(1 + ((pi*s0_rot*nu)/(6*N*f_rot))**2)
+    DOS_rot_s = DOS_rot - DOS_rot_g
+
+    Log("DEBUG: Interpolated value of S0_rot[0] = {}".format(s0_rot_extrapolated), console=False)
 
     plt.plot(nu/c, c*DOS_rot_g,  label = 'rot_g')
     plt.plot(nu/c, c*DOS_rot_s,  label = 'rot_s')
@@ -143,6 +157,7 @@ def CalculateEntropy_Translational(nu, DOS_tr_s, DOS_tr_g, f_tr, Delta_tr, m, N,
     # Hard sphere packing fraction; Carnahan-Sterling hard sphere equation of state
     y = (f_tr**(5/2)) / (Delta_tr**(3/2))
     z = (1 + y + y**2 - y**3) / (1 - y)**3
+    Log("Hard sphere y,z = {},{}".format(y,z), console=False)
     if z <= 0:
         Log("?! Hard sphere compressibility negative or zero! This should not happen. y, z = {}, {}".format(y,z))
 
@@ -152,6 +167,14 @@ def CalculateEntropy_Translational(nu, DOS_tr_s, DOS_tr_g, f_tr, Delta_tr, m, N,
     conv3 = (amu / eV)**(3/2) * nm**3 / ps**3
     S_HS = 5/2 + np.log(conv3 * (2*pi*m*kB*T/h**2)**(3/2) * V/N * z/f_tr ) + (3*y*y - 4*y)/(1-y)**2
 
+    # DEBUGGING
+    # Sometimes S_translational turns out to be negative. Why is this happening? Which one of these things is negative: S_HS, W_solid
+    Log("Hard sphere entropy S_HS = {}".format(S_HS), console=False)
+    if S_HS < 0:
+        Log("Negative hard sphere entropy is a bug. This will cause S_tr to be negative.", console=False)
+        Log("Ideal gas logarithmic term = {}".format(np.log(conv3 * (2*pi*m*kB*T/h**2)**(3/2) * V/N * z/f_tr)), console=False)
+        Log("Hard sphere correction term = {}".format((3*y*y - 4*y)/(1-y)**2), console=False)
+
     # Weighing function
     nu = nu[np.nonzero(nu)]
     bhn = h/kT * nu
@@ -159,6 +182,8 @@ def CalculateEntropy_Translational(nu, DOS_tr_s, DOS_tr_g, f_tr, Delta_tr, m, N,
     W_solid = bhn/(np.exp(bhn)-1) - np.log(1-np.exp(-bhn))
     DOS_tr_g = DOS_tr_g[np.nonzero(nu)]
     DOS_tr_s = DOS_tr_s[np.nonzero(nu)]
+
+        
 
     S_tr = simpson(DOS_tr_g*W_gas, x=nu) + simpson(DOS_tr_s*W_solid, x=nu)
     S_tr *= kB*eVtoJ
