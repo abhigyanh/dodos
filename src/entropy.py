@@ -160,6 +160,13 @@ def CalculateEntropy_Translational(nu, DOS_tr_s, DOS_tr_g, f_tr, Delta_tr, m, N,
     DOS_tr_g = DOS_tr_g[np.nonzero(nu)]
     DOS_tr_s = DOS_tr_s[np.nonzero(nu)]
 
+    # DEBUGGING
+    # Sometimes S_translational turns out to be negative. Why is this happening? Which one of these things is negative: S_HS, W_solid
+    Log("S_HS = {}".format(S_HS), console=False)
+    plt.plot(nu, W_solid)
+    plt.savefig('W_solid.png', dpi = 200, bbox_inches = 'tight')
+    plt.clf()
+
     S_tr = simpson(DOS_tr_g*W_gas, x=nu) + simpson(DOS_tr_s*W_solid, x=nu)
     S_tr *= kB*eVtoJ
     return S_tr
