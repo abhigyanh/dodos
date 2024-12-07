@@ -16,7 +16,7 @@ if __name__ == '__main__':
     # Set up argument parser
     parser = argparse.ArgumentParser()
     # Add arguments
-    parser.add_argument('-t', '--threads',      type=int, default=1, help="Number of parallel threads to spawn <1>")
+    parser.add_argument('-t', '--threads',      type=int, default=1, help="Number of parallel processes to spawn <1>")
     parser.add_argument('-T', '--temperature',  type=float, default=300.0, help="System temperature (Kelvin) in simulation <300>")
     parser.add_argument('-x', '--position',     type=str, default='pos.xvg', help="Positions dump file <pos.xvg>")
     parser.add_argument('-v', '--velocity',     type=str, default='veloc.xvg', help="Velocities dump file <veloc.xvg>")
@@ -357,7 +357,7 @@ if __name__ == '__main__':
 
     VelocDecompTime = -(VelocDecompTime - time.time())
     Log("> Finished velocity decomposition + spectrum (took {:.1f} s | {:.1f} ms per atom)".format(VelocDecompTime, 1000*VelocDecompTime/natoms)) 
-    Log("- Principal axes of inertia = {}, {}, {} amu nm^2".format(Inertia1, Inertia2, Inertia3), console=False)
+    Log("- Principal axes of inertia = {:.2e}, {:.2e}, {:.2e} amu nm^2".format(Inertia1, Inertia2, Inertia3), console=False)
 
     ##################################################################
     """
