@@ -80,6 +80,12 @@ To compare the validity and error of **dodos**, a dataset of 10 runs was generat
 
 **dodos** achieves remarkable agreement with [4], although it's standard error (0.48 J/molK) is not quite the same. When compared to itself, as shown on the right hand side, the script achieves a standard error of 0.44, 0.06, 0.01 J/molK on the translational, rotational and vibrational components of the entropy.
 
+## Thread scaling
+
+**dodos** can utilize parallelization using the *concurrent.futures* library in the standard Python library. The *--threads* option when calling **dodos** from the command line will allow it to utilize as many sub-processes to parallelize the velocity decomposition. To investigate the scaling of this process with the value of the *--threads* option, **dodos** was run once each by passing values from 1 to 32 to the *--threads* options.
+
+![Performance scaling](validation/perf_scaling/scaling.png "Performance scaling")
+
 ## Changelog
 
 - **1.30**
