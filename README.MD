@@ -24,7 +24,7 @@ dodos -T 298 -t $(nproc)
 
 This will run an example NVT simulation of 1000 molecules of TIP4P/2005F water in GROMACS, then use GROMACS in-built tools to dump the trajectories into a format accessible by this script. After that, dodos will run, utilizing all processors available on your system to parallelize the procedure. Once it's done, it will print out the entropy data in your console window, and create a txt file with the calculated DOS, and make some plots for your viewing. The console output should be something similar to the following:
 
-![Console output of dodos](example/1.png "Console output of dodos")
+![Console output of dodos](example/tip4p2005F.png "Console output of dodos")
 
 The molar entropy of TIP4P/2005F water at 298K is ~60 (J/mol K) [4]. Add up the translational, rotational and vibrational entropy printed in your console output and if it's about 60, then you're done.
 
@@ -42,7 +42,7 @@ The starting point for every dodos run is the trajectory file (.trr) output by y
 
 (Choose the 'System" option, or whatever option you desire to perform this calculation for.)
 
-2. Now use *gmx traj* to dump the coordinates and velocities from the *trr* trajectory file into *xvg* dump files that can be read by the Python script. **Note that the option *-n* passes an *ndx* file containing atom indices for OW, HW1 and HW2 atoms**, which are the atoms in 4-point water models such as TIP4P/2005F. The virtual site (usually named MW) in 4-point water models are massless and do not contribute to the DoS, hence need not to be included in the dump. This will reduce your dump file size, as well as the number of computations required.
+2. Now use *gmx traj* to dump the coordinates and velocities from the *trr* trajectory file into *xvg* dump files that can be read by the Python script. **Note that the option *-n* passes an *ndx* file containing atom indices for OW, HW1 and HW2 atoms**, which are the atoms in 4-point water models such as TIP4P/2005F. The virtual sites (usually named MW) in 4-point water models are massless and do not contribute to the DoS, hence need not be included in the dump. This will reduce the dump file size, as well as the number of computations required.
 
 ```bash
  gmx traj -f traj_whole.trr -n not_name_OW.ndx -s <mysimulation.tpr> -ov veloc.xvg -ox pos.xvg -ob box.xvg
