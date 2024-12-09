@@ -1,8 +1,7 @@
-Uses Numpy, Scipy and Matplotlib.
 
 ## Installation
 
-Clone or download the repository, go into directory and:
+Download the *zip* archive from the **Releases** section, extract it, go into the extracted directory and run the following in a terminal:
 
 ```bash
 pip install -r requirements.txt
