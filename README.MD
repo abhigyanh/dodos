@@ -73,7 +73,7 @@ The option *--threads* tells it how many jobs it should spawn to utilize the par
 
 ## Validation and Error
 
-To compare the validity and error of **dodos**, a dataset of 10 runs was generated, with the same initial conditions provided from the *example.tpr* file. For each run, **dodos** was launched to analyze the corresponding trajectory, and hence calculate the entropy. These were tallied, graphed and compared with the literature value [4] as shown:
+To compare the validity and error of **dodos**, a dataset of 50 runs was generated, with the same initial conditions provided from the *example.tpr* file. For each run, **dodos** was launched to analyze the corresponding trajectory, and hence calculate the entropy. These were tallied, graphed and compared with the literature value [4] as shown:
 
 ![Validation and error](validation/error_estimation/error-estimate.png "Validation and error")
 
