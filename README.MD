@@ -78,7 +78,7 @@ To compare the validity and error of **dodos**, a dataset of 10 runs was generat
 
 ![Validation and error](validation/error_estimation/error-estimate.png "Validation and error")
 
-**dodos** achieves remarkable agreement with [4], although it's standard error (0.48 J/molK) is not quite the same. When compared to itself, as shown on the right hand side, the script achieves a standard error of 0.44, 0.06, 0.01 J/molK on the translational, rotational and vibrational components of the entropy.
+**dodos** achieves agreement within one std. deviation with [4], although it's standard error (0.41 J/molK) is not quite as good. When compared to itself, as shown on the right hand side, the script achieves a standard error of 0.36, 0.07, 0.02 J/molK on the translational, rotational and vibrational components of the entropy.
 
 ## Thread scaling
 
